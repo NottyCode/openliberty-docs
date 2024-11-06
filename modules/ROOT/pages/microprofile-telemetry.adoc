@@ -12,16 +12,8 @@
 :page-type: general
 = OpenTelemetry
 
-The OpenTelemetry project is a collection of open source vendor-independent tools, APIs, and SDKs for creating and managing logs, metrics, and trace data. With Open Liberty and MicroProfile Telemetry 2.0 and later, you can manage logs, metrics, and traces in a standardized way by using the OpenTelemetry protocol.
+The OpenTelemetry project is a collection of open source vendor-independent tools, APIs, and SDKs for creating and managing logs, metrics, and trace data. With Open Liberty and MicroProfile Telemetry 2.0 and later, you can manage this data in a standardized way by using the OpenTelemetry protocol.
 
-The following sections explain how to prepare your Open Liberty runtime and application code to use MicroProfile Telemetry.
-
-
-- <<#global, Enabling MicroProfile Telemetry for Open Liberty>>
-- <<#traces, Collecting traces>>
-- <<#logs, Collecting logs>>
-- <<#metrics, Collecting metrics>>
-- <<#trouble, Troubleshooting>>
 
 [#global]
 == Collecting and exporting logs, metrics, and traces with OpenTelemetry
@@ -47,7 +39,7 @@ To use OpenTelemetry to collect and export logs, metrics, and traces in your Ope
 * `appProperties` attribute for the config:application[] element in the `server.xml` file.
 |===
 
-=== Enabling OpenTelemetry for a Liberty runtime with a single application
+=== Enabling OpenTelemetry for an Open Liberty runtime with a single application
 
 When your Liberty runtime hosts only one application, you can enable Open Telemetry at the runtime level to collect and export logs, metrics, and traces for both the runtime and the application
 
@@ -69,7 +61,7 @@ otel.sdk.disabled=false
 
 After you enable the MicroProfile Telemetry feature and set this system property, your runtime is ready to start collecting and exporting logs, metrics, and traces from the application and the runtime. For more information, see the individual sections for logs, metrics, and traces.
 
-=== Enabling OpenTelemetry for multiple applications in the same Liberty runtime
+=== Enabling OpenTelemetry for multiple applications in the same Open Liberty runtime
 
 When your Liberty runtime hosts multiple applications, you can enable OpenTelemetry to collect logs, metrics, and traces at the application level for each application. Although this option does not collect runtime-level telemetry, it gives you fine-grained control of the data you collect for each application.
 
@@ -101,7 +93,9 @@ otel.service.name=A2
 +
 This configuration creates all telemetry from Application 1 with the service name `A1`, and from Application 2 with the service name `A2`.
 
-* You can also use a combination of runtime-level and application-level configuration, so that some settings apply to all applications on the runtime, while others are specific to each application. Any configuration in the system properties and server environment variables takes precedence over application-level configuration. Therefore, you can enable OpenTelemetry and assign a service name individually for each application, but specify other settings at the runtime level to apply globally to all applications on the runtime.
+* You can also use a combination of runtime-level and application-level configuration, so that some settings apply to all applications on the runtime, while others are specific to each application. This strategy can save you from having to duplicate general configuration settings in multiple applications on the same runtime.
+
+Any configuration in the system properties and server environment variables takes precedence over application-level configuration. Therefore, you can enable OpenTelemetry and assign a service name individually for each application, but specify other settings at the runtime level to apply globally to all applications on the runtime.
 +
 For example, you might want to collect a unique set of telemetry data for each application in the runtime, but have all applications share the same OpenTelemetry exporter. You can set the OpenTelemetry exporter at the runtime-level in the `bootstrap.properties` file:
 +
@@ -131,104 +125,23 @@ When you enable OpenTelemetry for Open Liberty, Jakarta RESTful Web Services and
 
 Automatic instrumentation is available only for JAX-RS and Jakarta RESTful web service applications. To create spans for other operations, such as database calls, you can add manual instrumentation to the source code for those operations by using the OpenTelemetry API. Alternatively, you can attach the OpenTelemetry Java agent to any Java 8+ application. For more information about these options, see xref:telemetry-trace.adoc#t[Code instrumentation for MicroProfile Telemetry tracing].
 
-By default, OpenTelemetry exports traces to the `otlp` exporter at the `http://localhost:4317` endpoint. You can configure an alternative trace storage system by setting MicroProfile Config properties.
-
-
 [#logs]
 == Logs
 
-When you enable OpenTelemetry for Open Liberty, by default, logs are collected from the `message` log or the application or runtime and exported to the `otlp` exporter.
+OpenTelemetry automatically collects any logs that are sent to the `java.util.logging` API. Any messages that are logged at a `java.util.logging.Level` log level of `INFO` and above are considered messages. Levels below `INFO` are considered trace. By default, OpenTelemetry automatically collects messages, but you can configure the sources that it collects from in your `server.xml` file. For more information, see link:/docs/latest/reference/feature/mpTelemetry-2.0.html#_collect_logs_from_a_specified_source[Collect logs from a specified source].
 
-* To specify one or more alternative log sources, configure the `source` attribute for the `mpTelemetry` element in your `server.xml` file with a comma-separated list of log sources:
-+
-[source,xml]
-----
-<mpTelemetry source="message, trace, ffdc"/>
-----
-+
-For information about Liberty message event fields for MicroProfile Telemetry, see xref:mptel-log-events-list.adoc[MicroProfile Telemetry log events reference list].
+For information about Liberty message event fields for OpenTelemetry, see xref:mptel-log-events-list.adoc[MicroProfile Telemetry log events reference list].
 
-* To change the log exporter that MicroProfile Telemetry uses, specifying the `otel.logs.exporter` property.
-+
-For example, to send logs to the `console.log` file for debugging purposes, you might add configuration similar to the following example to your `bootstrap.properties` file:
-+
-[source,properties]
-----
-otel.logs.exporter=console
-----
-+
-If you set this property to `console`, all the logs are exported to standard out (`stdout`) or the `console.log` file. The `console.log` file contains the usual logs, along with duplicate OpenTelemetry-mapped logs. This setting is only for debugging purposes because the `console.log` file does not roll over and might affect performance if it gets too large. If you set this property to `none`, no logs are exported.
-+
-
+By default, the OpenTelemetry Simple logRecord Processor is enabled, so the records are sent immediately. However, if you want to send the records in batches, you can also configure the logging-specific Batch LogRecord Processor properties.
 
 
 [#metrics]
-== Configuring Open Liberty to use MicroProfile Telemetry to collect metrics
+== Metrics
 
-To enable MicroProfile Telemetry to collect and export metrics in your Open Liberty runtime, add the MicroProfile Telemetry 2.0 feature to your `server.xml` file and enable the OpenTelemetry SDK. Optionally, you can specify MicroProfile Config properties to configure how MicroProfile Telemetry collects and exports metrics.
-
-. Enable the MicroProfile Telemetry feature 2.0 or later and specify a MicroProfile Config property or environment variable to enable the OpenTelemetry SDK.
-+
-For more information, see <<#global,Enabling MicroProfile Telemetry for Open Liberty>>
-
-. Optionally, change the log exporter that MicroProfile Telemetry uses.
-+
-By default, all OpenTelemetry data is exported to link:https://opentelemetry.io/docs/languages/java/exporters/#otlp[OTLP]. You can change this setting by specifying the `otel.metrics.exporter` property or the `OTEL_METRICS_EXPORTER` environment variable.
-+
-For example, to export metrics to Open Liberty log files, specify the following property:
-+
-----
-otel.metrics.exporter=console
-----
-
-. Optionally, change the metric export interval.
-+
-By default, metric data is exported at an interval of 60 seconds. To modify the export interval, specify the `otel.metric.export.interval` property or the `OTEL_METRIC_EXPORT_INTERVAL` environment variable. Specify the value in milliseconds. For more information, see link:https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/#periodic-exporting-metricreader[Periodic exporter MetricReader] in the OpenTelemetry documentation.
-
-Depending on how you choose to instrument your application code for metrics, further configuration might be required. For information about defining your own metrics, see xref:custom-mptelemetry-metrics.adoc[Define custom MicroProfile Telemetry metrics].
+By default, OpenTelemetry exports metric data at an interval of 60 seconds. You can modify the export interval and other default settings by using MicroProfile config properties.
 
 For a list of metrics that are available for Open Liberty when you enable the MicroProfile Telemetry feature 2.0 or later, see xref:mptelemetry-metrics-list.adoc[MicroProfile Telemetry metrics reference list].
 
-[#trouble]
-== Troubleshooting MicroProfile Telemetry
-The following information can help you determine the cause of common problems and error messages.
-
-Previous spans are incorrectly shown as current or parent spans::
-
-If the `Scope` instance is not closed correctly, the context and baggage values of previous spans might remain when the next operation executes. Alternatively, the current span might remain and be picked up as the parent of the next operation that executes.
-+
-Always close the `Scope` instance when you exit an operation. This configuration stops the span from being current and makes the previous span current again. Use a `try-with-resources` block, which automatically closes the `Scope` instance at the end of the block, as shown in the following example:
-+
-[source, java]
-----
-Span span = tracer.spanBuilder("PerformingOperation").startSpan();
-try (Scope scope = span.makeCurrent()) {
-    ...
-} finally {
-    span.end();
-}
-----
-
-You receive the `CWMOT5100I` message that tracing is disabled::
-
-If you enable the `mpTelemetry-1.1` or `mpTelemetry-1.0` feature, you must also set the `otel.sdk.disabled=false` property in any of the configuration sources that are accessible through MicroProfile Config to enable tracing.
-
-You receive the CWMOT5003W message that the application attempted to acquire MicroProfile Telemetry after shut down::
-
-Review the application to see why it attempted to use MicroProfile Telemetry after it shut down. Actions that might trigger MicroProfile Telemetry include calling a method that is annotated with `@WithSpan` or making a request with a JAX-RS Client or MP Rest Client.
-
-You receive either of the CWMOT5006W or CWMOT5007 warning message that conflicting configuration is specified for otel.sdk.disabled::
-
-Specify the settings to enable or disable OpenTelemetry instances by using either environment variables or MicroProfile Config sources, but not both. If you see these warnings, the other MicroProfile Config source to look at is your `server.xml` file.
-
-////
-+
-Different versions of the MicroProfile Telemetry feature are compatible with different MicroProfile versions, Jakarta and Java Enterprise Editions, and the Open Liberty umbrella features that support them. Both feature:mpTelemetry-1.0[] and feature:mpTelemetry-1.1[] are compatible with feature:jakartaee-10.0[] and feature:microProfile-6.0[]. However, `mpTelemetry-1.1` is also compatible with the following earlier umbrella features:
-+
-*  feature:javaee-7.0[] and feature:microProfile-1.4[]
-*  feature:jakartaee-8.0[] and feature:microProfile-4.1[]
-*  feature:jakartaee-9.1[] and feature:microProfile-5.0[]
-////
 
 == See also
 
