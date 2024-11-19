@@ -2,9 +2,9 @@
 
 === Enable OpenTelemetry
 
-In addition to enabling the MicroProfile Telemetry feature, you must also set the `otel.sdk.disabled=false` system property in one of the valid configuration sources. Depending on your application scenario, you can set this property at the runtime level, or the application level. For more information see xref:ROOT:microprofile-telemetry.adoc#global[Collecting and exporting logs, metrics, and traces with OpenTelemetry.]
+TO enable OpenTelemetry for Open Liberty, in addition to enabling the MicroProfile Telemetry feature, you must also set the `otel.sdk.disabled=false` system property in one of the valid configuration sources. Depending on your application scenario, you can set this property at the runtime level or the application level. For more information, see xref:ROOT:microprofile-telemetry.adoc#global[Collecting and exporting logs, metrics, and traces with OpenTelemetry].
 
-The following example demonstrates how to enable OpenTelemetry at the runtime level,by setting the property in your `bootstrap.properties` file:
+The following example demonstrates how to enable OpenTelemetry at the runtime level by setting the property in your `bootstrap.properties` file:
 
 ----
 otel.sdk.disabled=false
