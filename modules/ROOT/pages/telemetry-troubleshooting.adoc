@@ -17,7 +17,7 @@ The following information can help you determine the cause of common problems an
 [#console]
 == Exporting logs, metrics, or traces to the console for debugging purposes
 
-By default, all OpenTelemetry data is exported to the `otlp` exporter. For debugging purposes, you can temporarily change the export destination to the `console.log` file by setting the `otel.<_signal_>.exporter=console` property at the application or the runtime level.
+By default, all OpenTelemetry data is exported to the `otlp` exporter. For debugging purposes, you can temporarily change the export destination to the `console.log` file by setting the `otel.< _signal_ >.exporter=console` property at the application or the runtime level.
 
 For example, to send all application and runtime traces to the `console.log` file, you might set the following property in the `bootstrap.properties` file:
 
