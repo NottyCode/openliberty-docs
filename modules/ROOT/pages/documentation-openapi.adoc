@@ -201,36 +201,6 @@ MicroProfile Config provides properties to manage which applications and modules
 For more information, see the xref:reference:config/mpOpenAPI.adoc[MicroProfile Config properties for MicroProfile OpenAPI].
 
 
-
-===
-
-Customize the structured API documentation that is generated for your applications by configuring the link:/docs/latest/reference/feature/mpOpenAPI-4.0.html#_configure_openapi_documentation_for_a_multi_module_application[server.xml] file. Use the following elements within the `mpOpenAPI` configuration to control the inclusion and exclusion of applications and modules in the OpenAPI documentation:
-
-- `includeApplication`: Specifies applications to include in the documentation.
-- `excludeApplication`: Specifies applications to exclude from the documentation.
-- `includeModule`: Specifies modules to include in the documentation.
-- `excludeModule`: Specifies modules to exclude from the documentation.
-
-This configuration provides flexibility to tailor the documentation to your specific needs, such as excluding sensitive modules or overriding default metadata.
-
-For more information, see the feature:mpOpenAPI[MicroProfile OpenAPI 4.0] feature.
-
-
-=== Configure by using MicroProfile Config properties
-
-MicroProfile Config provides a way to manage which applications and modules are included in the generated OpenAPI documentation by specifying configuration properties. Use these properties to define inclusion and exclusion rules and to customize the `info` section of the final OpenAPI document.
-
-- This method is suitable for dynamic setups because it allows changes to be made without directly modifying the `server.xml` file.
-
-- MicroProfile Config options are compatible only with versions 3.0 and earlier.
-
-, the application and module names are determined based on specific rules.
-
-- **Application name**: The application name is determined from the application's deployment descriptor (`application.xml` or `web.xml`). If the deployment descriptor is missing or does not specify a name, the application name defaults to the application archive filename with the file extension removed.
-- **Module name**: The module name is determined by using the same rules as described for the `server.xml` configuration.
-
-For more information, see the xref:reference:config/mpOpenAPI.adoc[MicroProfile Config properties for MicroProfile OpenAPI].
-
 == See also
 
 - Guide: link:/guides/microprofile-config-intro.html[Separating configuration from code in microservices]
