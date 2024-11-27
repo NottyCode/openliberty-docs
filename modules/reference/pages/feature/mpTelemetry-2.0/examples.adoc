@@ -1,17 +1,43 @@
 == Examples
 
+=== Enable OpenTelemetry
+
+To enable OpenTelemetry for Open Liberty, in addition to enabling the MicroProfile Telemetry feature, you must also set the `otel.sdk.disabled=false` system property in one of the valid configuration sources. Depending on your application scenario, you can set this property at the runtime level or the application level. For more information, see xref:ROOT:microprofile-telemetry.adoc#global[Collecting and exporting logs, metrics, and traces with OpenTelemetry].
+
+The following example demonstrates how to enable OpenTelemetry at the runtime level by setting the property in your `bootstrap.properties` file:
+
+----
+otel.sdk.disabled=false
+----
+
+When you enable the MicroProfile Telemetry feature and set this property, your system is ready to collect and export logs, metrics, and traces.
+
 [#logs]
 === Collect logs from a specified source
 
-To enable the MicroProfile Telemetry feature to collect logs from different sources in the Open Liberty runtime environment, configure the `source` attribute for the `mpTelemetry` element with a comma-separated list of comma-separated log sources.
+To enable the MicroProfile Telemetry feature to collect logs from different sources in the Open Liberty runtime environment, configure the `source` attribute for the `mpTelemetry` element with a comma-separated list of log sources.
 
 [source,xml]
 ----
 <mpTelemetry source="message, trace, ffdc"/>
 ----
 
-* The `mpTelemetry` configuration element is optional. If you do not specify ity or the `source` attribute, the default configuration source is `message`.
+* The `mpTelemetry` configuration element is optional. If you do not specify it or the `source` attribute, the default configuration source is `message`.
 
 * If the source attribute is empty (`source=“”`), no sources are collected, and nothing is routed to the configured OpenTelemetry logs exporter.
 
 * The attributes and values are case insensitive.
+
+[#dev]
+=== Customize your application telemetry with the OpenTelemetry API
+
+Although OpenTelemetry automatically collects a default set of logs, metrics, and traces, if you need to xref:ROOT:telemetry-trace.adoc[manually instrument your code to collect traces] or xref:ROOT:custom-mptelemetry-metrics.adoc[define custom metrics], you must make the OpenTelemetry API visible in your development environment.
+
+xref:ROOT:class-loader-library-config.adoc#3rd-party[Enable third-party APIs] for your application by adding the following code in your `server.xml` file:
+
+[source,xml]
+----
+<webApplication id="app-name" location="app-name.war">
+    <classloader apiTypeVisibility="+third-party"/>
+</webApplication>
+----
