@@ -49,12 +49,12 @@
   ** xref:distributed-session-caching.adoc[Distributed session caching]
   ** xref:configuring-infinispan-support.adoc[Configuring Infinispan as a JCache provider]
 * xref:observability.adoc[Observability]
-  ** xref:prepare-mptelemetry.adoc[Prepare your development environment for MicroProfile Telemetry]
+//  ** xref:prepare-mptelemetry.adoc[Prepare your development environment for MicroProfile Telemetry]
   ** xref:custom-mptelemetry-metrics.adoc[Define custom MicroProfile Telemetry metrics]
   ** xref:telemetry-trace.adoc[Code instrumentation for MicroProfile Telemetry tracing]
-  ** xref:mptelemetry-logging.adoc[Write logs with MicroProfile Telemetry logging]
-  ** xref:microservice-observability-metrics.adoc[Microservice observability with with MicroProfile Metrics]
-  ** xref:micrometer-metrics.adoc[Choose your own monitoring tools with MicroProfile Metrics]
+//  ** xref:mptelemetry-logging.adoc[Write logs with MicroProfile Telemetry logging]
+  ** xref:microservice-observability-metrics.adoc[Microservice observability with MicroProfile Metrics]
+    *** xref:micrometer-metrics.adoc[Choose your own monitoring tools with MicroProfile Metrics]
   ** xref:health-check-microservices.adoc[Health checks for microservices]
   ** https://openliberty.io/guides/#observability[Guides: Observability]
 * xref:integration-testing.adoc[Testing]
@@ -116,7 +116,6 @@
 
 // Begin operations section
 .Operations
-* xref:microprofile-telemetry.adoc[Enable observability with MicroProfile Telemetry]
 * xref:log-trace-configuration.adoc[Logs]
   ** xref:log-management.adoc[Log management]
   ** xref:access-logging.adoc[HTTP access logging]
@@ -132,6 +131,8 @@
   ** xref:metrics-list.adoc[MicroProfile Metrics reference list]
   ** xref:configuring-jmx-connection.adoc[Configuring JMX connections]
   ** xref:jmx-metrics-list.adoc[JMX metrics reference list]
+* xref:microprofile-telemetry.adoc[OpenTelemetry]
+  ** xref:telemetry-troubleshooting.adoc[Troubleshooting OpenTelemetry]
 * xref:slow-hung-request-detection.adoc[Slow and hung request detection]
 * xref:validating-server-connections.adoc[Validating server connections]
 * xref:admin-center.adoc[Admin Center GUI]
