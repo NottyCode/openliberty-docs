@@ -45,6 +45,7 @@ buildscript {
 }
 ----
 
+
 == Send multipart/form-data parts from Jakarta Restful Web Services resources
 
 One way to send multipart form data in an HTTP request is to use an HTML form. You might create an HTML form for a human user to send file data to a web application. The following example shows an HTML form that sends an HTTP request in three parts that each specifies a particular content type.

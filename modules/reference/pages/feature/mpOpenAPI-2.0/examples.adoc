@@ -1,37 +1,65 @@
 
-== Examples
-
 === Configure OpenAPI documentation for a multi-module application
 
 // This example only applies to 2.0 forward, and so the file and directory must be manually copied and applied to any new versions. Copy the directory and file and change the directory name to reflect the new feature version, for example `mpOpenAPI-3.2`.
 
-You can specify xref:ROOT:external-configuration.adoc[MicroProfile Config] properties to configure the Microprofile OpenAPI feature to merge OpenAPI documentation for multiple applications or modules into a single document.
+By default, only the first module of the first deployed application is included in the OpenAPI documentation. However, you can configure the MicroProfile OpenAPI feature to merge the OpenAPI documentation for multiple applications or modules into a single document.
 
-In the following `microprofile-config.properties` file example, an OpenAPI document is configured for the `sample_app` application, which consists of an `EAR` file with five web modules.
+For example, the following configuration is for the `sample_app` application, which consists of an `EAR` file containing five web modules.
 
-[source,java]
+[source,xml]
 ----
-mp.openapi.extensions.liberty.merged.include=all
-mp.openapi.extensions.liberty.merged.exclude=sample_app/module-3,sample_app/module-5
-mp.openapi.extensions.liberty.merged.info=
-{
-  "title": "A multi-module sample application",
-  "description": "This is a sample application.",
-  "termsOfService": "http://example.com/sample_app/terms",
-  "contact": {
-    "name": "API Support",
-    "url": "http://www.example.com/sample_app/support",
-    "email": "sample_app_support@example.com"
-  },
-  "license": {
-    "name": "License 2.0",
-    "url": "https://www.example.org/licenses/LICENSE-2.0.html"
-  },
-  "version": "2.0.1"
-}
+<mpOpenAPI>
+  <includeApplication>all</includeApplication>
+  <excludeModule>sample_app/module-3</excludeModule>
+  <excludeModule>sample_app/module-5</excludeModule>
+  <info title="A multi-module sample application"
+        description="This is a sample application."
+        version="2.0.1"
+        termsOfService="http://example.com/sample_app/terms"
+        contactName="API Support"
+        contactUrl="http://www.example.com/sample_app/support"
+        contactEmail="sample_app_support@example.com"
+        licenseName="License 2.0"
+        licenseUrl="https://www.example.org/licenses/LICENSE-2.0.html"
+        />
+</mpOpenAPI>
 ----
-* The `mp.openapi.extensions.liberty.merged.include` property specifies that all five modules are included in the final OpenAPI document.
-* The `mp.openapi.extensions.liberty.merged.exclude` overrides the `mp.openapi.extensions.liberty.merged.include` property to exclude the `module-3` and `module-5` web modules.
-* The `mp.openapi.extensions.liberty.merged.info` property sets the `info` section for the final OpenAPI document, which documents web modules 1, 2, and 4.
+
+- The `<includeApplication>` element specifies that all applications are included in the final OpenAPI document.
+
+- The `<excludeModule>` elements exclude the `module-3` and `module-5` web modules.
+
+- The `<info>` element sets the info section for the final OpenAPI document, which documents web modules 1, 2, and 4.
+
+=== Naming applications and modules   
+
+- The application name is determined by the value of the `name` attribute when the application is deployed in `server.xml` using `application`, `webApplication`, or `enterpriseApplication`. For example:
++
+[source,xml]
+----
+<webApplication name="application1" location="application1-v1.war" />
+----
++
+If the application is deployed in the `dropins` directory or if the `name` attribute is not specified, the name defaults to the archive filename with the extension removed.
++
+- The module name is specified in the web module's `web.xml` file. If there is no `web.xml` file or if it does not specify a name, the module name defaults to the filename with the extension removed.
+
+=== Override the info section in the OpenAPI document
+
+You can also override the `info` section of the OpenAPI document using the following configuration:
+
+[source,xml]
+----
+<mpOpenAPI>
+  <info title="Example API"
+        version="1.0"
+        description="This is an example API"/>
+</mpOpenAPI>
+----
+
+Overriding the `info` section is useful for documenting multiple modules or applications. Without an override, the `info` section can be replaced with a standard version which indicates that documentation from several modules was merged.
 
 For more information, see xref:ROOT:documentation-openapi.adoc#multi-module[Multiple application and multi-module application support with MicroProfile OpenAPI]
+
+
